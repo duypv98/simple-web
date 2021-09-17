@@ -13,7 +13,7 @@ import { UnauthorizedError } from '../common/error';
 export function signCredentials(args) {
   const { credentials, type = 'accessToken' } = args;
   const secret = type === 'accessToken' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
-  const expiresIn = type === 'accessToken' ? 600 : '7d';
+  const expiresIn = type === 'accessToken' ? 600 : 60 * 60 * 24 * 7;
   const nonce = crypto.randomBytes(6).toString('hex');
   return jwt.sign({ nonce, ...credentials }, secret, { expiresIn });
 }

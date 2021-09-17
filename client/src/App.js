@@ -6,6 +6,7 @@ import './App.css';
 import HomeView from './components/HomeView';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import fetchInterceptors from './utils/fetchInterceptor';
 
 function App() {
 
@@ -16,12 +17,7 @@ function App() {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://api.local-ijd.test/users/me', {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: 'include'
-    })
-      .then((res) => res.json())
+    fetchInterceptors({ url: '/users/me', baseUrl: process.env.REACT_APP_ENDPOINT })
       .then((rspBody) => {
         if (rspBody.success) {
           setUser(rspBody.data);

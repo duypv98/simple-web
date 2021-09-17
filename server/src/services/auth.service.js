@@ -21,7 +21,7 @@ export default {
     if (!await comparePassword(user.password, password)) throw new ServerError({ data: -1 });
 
     const access_token = signCredentials({ credentials: { user_id: user.id, user_name: user.name } });
-    const refresh_token = signCredentials({ credentials: { user_id: user.id }, type: 'refreshToken' });
+    const refresh_token = signCredentials({ credentials: { user_id: user.id, user_name: user.name }, type: 'refreshToken' });
 
     await UserToken.update({ access_token, refresh_token }, { where: { user_id: user.id } });
 
@@ -69,5 +69,15 @@ export default {
     // TODO: Redis
     const [updated] = await UserToken.update({ access_token: null, refresh_token: null }, { where: { user_id: args.user_id } });
     return { updated }
+  },
+
+  /**
+   * 
+   * @param {{ user_id: number; user_name?: string }} args 
+   */
+  refreshToken: async (args) => {
+    const access_token = signCredentials({ credentials: args });
+    await UserToken.update({ access_token }, { where: { user_id: args.user_id } });
+    return access_token;
   }
 }

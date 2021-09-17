@@ -3,7 +3,8 @@ import { BadRequestError } from '../common/error';
 import { successResponse } from '../common/responses';
 import authService from '../services/auth.service';
 import asyncHandler from '../utils/asyncHandler';
-import { verifyTokenMiddleware } from '../middlewares/authMiddlewares';
+import { verifyRefreshTokenMiddleware, verifyTokenMiddleware } from '../middlewares/authMiddlewares';
+import { signCredentials } from '../utils/jwtHelper';
 
 const authRouter = Router();
 
@@ -13,10 +14,11 @@ authRouter.post(
     const { email, password } = req.body;
     if (!email || !password) throw new BadRequestError();
     const data = await authService.login({ email, password });
-    const { access_token, ...response } = data;
+    const { access_token, refresh_token, ...response } = data;
     const cookieOptions = { httpOnly: true };
     if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { sameSite: 'none', secure: true });
-    res.cookie('x-access-token', access_token, cookieOptions);
+    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
+    res.cookie('x-refresh-token', refresh_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 7 });
     return successResponse(res, response);
   })
 );
@@ -42,6 +44,20 @@ authRouter.get(
       await authService.logout({ user_id });
     }
     res.clearCookie('x-access-token');
+    res.clearCookie('x-refresh-token');
+    return successResponse(res);
+  })
+)
+
+authRouter.post(
+  '/refresh-token',
+  verifyRefreshTokenMiddleware,
+  asyncHandler(async (req, res) => {
+    const { user_id, user_name } = req.credentials;
+    const access_token = await authService.refreshToken({ user_id, user_name });
+    const cookieOptions = { httpOnly: true };
+    if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { sameSite: 'none', secure: true });
+    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
     return successResponse(res);
   })
 )
