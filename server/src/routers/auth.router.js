@@ -19,8 +19,8 @@ authRouter.post(
     if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
     if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
     if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
-    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
-    res.cookie('x-refresh-token', refresh_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 7 });
+    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
+    res.cookie('x-refresh-token', refresh_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
     return successResponse(res, response);
   })
 );
@@ -61,7 +61,7 @@ authRouter.post(
     if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
     if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
     if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
-    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
+    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
     return successResponse(res);
   })
 )
