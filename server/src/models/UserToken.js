@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../utils/sequelize';
-import User from './user';
+import User from './User';
 
 export const userTokensTbl = 'user_tokens';
 

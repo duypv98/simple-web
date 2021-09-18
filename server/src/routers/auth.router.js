@@ -16,7 +16,9 @@ authRouter.post(
     const data = await authService.login({ email, password });
     const { access_token, refresh_token, ...response } = data;
     const cookieOptions = { httpOnly: true };
-    if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { sameSite: 'none', secure: true });
+    if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
+    if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
+    if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
     res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
     res.cookie('x-refresh-token', refresh_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 7 });
     return successResponse(res, response);
@@ -56,7 +58,9 @@ authRouter.post(
     const { user_id, user_name } = req.credentials;
     const access_token = await authService.refreshToken({ user_id, user_name });
     const cookieOptions = { httpOnly: true };
-    if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { sameSite: 'none', secure: true });
+    if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
+    if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
+    if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
     res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 15 });
     return successResponse(res);
   })
