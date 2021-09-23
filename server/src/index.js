@@ -9,6 +9,7 @@ import helmet from 'helmet';
 dotenv.config();
 
 const PORT = +(process.env.PORT || 3001);
+const ENV = process.env.NODE_ENV || 'development'
 const app = express();
 
 app.use(helmet());
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'development' ? '*' : process.env.ALLOWED_ORIGIN,
+  origin: ENV === 'development' ? true : process.env.ALLOWED_ORIGIN,
   // ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://local-ijd.test'],
   credentials: true,
   // process.env.NODE_ENV === 'development' ? false : true
