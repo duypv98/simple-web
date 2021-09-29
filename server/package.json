@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src -d dist",
-    "start": "npm run build && node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "dev": "nodemon --exec babel-node src/index.js",
     "migrate": "npx sequelize db:migrate",
     "migrate:undo": "npx sequelize db:migrate:undo",
@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@types/cookie-parser": "1.4.2",
+    "cross-env": "^7.0.3",
     "nodemon": "2.0.12",
     "sequelize-cli": "6.2.0"
   }

@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({
-  origin: ENV === 'development' ? true : process.env.ALLOWED_ORIGIN,
+  origin: ENV === 'development' ? true : (process.env.ALLOWED_ORIGIN || '').split(','),
   // ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://local-ijd.test'],
   credentials: true,
   // process.env.NODE_ENV === 'development' ? false : true
