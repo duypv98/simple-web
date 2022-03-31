@@ -1,8 +1,9 @@
 import { Button } from 'antd';
 import { PropsWithoutRef } from "react";
+import User from "../../../../models/User";
 import './style.css';
 
-const HomeView = (props: PropsWithoutRef<{ user: { userName: string, userId: string }; logoutCallback: () => void }>) => {
+const HomeView = (props: PropsWithoutRef<{ user: { userId: string; userName: string }; logoutCallback: () => void }>) => {
   const logout = () => {
     fetch(`${process.env.REACT_APP_ENDPOINT}/auth/logout`, {
       method: "GET",

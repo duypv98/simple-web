@@ -1,10 +1,9 @@
-/**
- * 
- * @param {{ method?: string; url: string; baseUrl: string; body?: any }} args 
- */
-const fetchInterceptors = async (args) => {
+const fetchInterceptors = async (args: { method?: string; url: string; baseUrl: string; body?: any }): Promise<{
+  success: boolean;
+  data: any
+}> => {
   const { method = 'GET', url, baseUrl, body } = args;
-  const config = { method, headers: { "Content-Type": "application/json" }, credentials: 'include' };
+  const config: RequestInit = { method, headers: { "Content-Type": "application/json" }, credentials: 'include' };
   if (method !== 'GET' && body) Object.assign(config, { body: JSON.stringify(body) });
 
   const response = await fetch(`${baseUrl}${url}`, config);

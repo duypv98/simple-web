@@ -19,7 +19,7 @@ export default {
     const accessToken = signCredentials({ credentials: { userId: user.id, userName: user.name } });
     const refreshToken = signCredentials({ credentials: { userId: user.id, userName: user.name }, type: 'refreshToken' });
 
-    UserTokenModel.findOneAndUpdate({ userId: user._id }, { $set: { accessToken, refreshToken } });
+    UserTokenModel.findOneAndUpdate({ userId: user._id }, { $set: { accessToken, refreshToken } }).exec();
 
     return {
       userId: user.id,

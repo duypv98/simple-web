@@ -3,8 +3,10 @@ import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Provider } from "react-redux";
 import App from './App';
 import './index.css';
+import { store } from "./redux/store";
 
 ReactDOM.render(
   <HelmetProvider>
@@ -13,7 +15,9 @@ ReactDOM.render(
         <title>Main App</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossOrigin="anonymous" />
       </Helmet>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </CookiesProvider>
   </HelmetProvider>,
   document.getElementById('root')
