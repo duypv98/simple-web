@@ -5,6 +5,7 @@ import { handleAPIError, handleNotFoundError } from './middlewares/errorHandlers
 import router from './routers';
 import dotenv from './utils/dotenv';
 import helmet from 'helmet';
+import connectDatabase from "./utils/mongoose";
 
 dotenv.config();
 
@@ -32,6 +33,9 @@ app.use(router);
 app.use(handleAPIError);
 app.use(handleNotFoundError);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+connectDatabase(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+})
+

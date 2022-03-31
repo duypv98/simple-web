@@ -1,23 +1,20 @@
 import { ServerError } from '../common/error';
+import UserModel from "../models/User";
 import User from '../models/User';
 import { decodePassword, hashPassword, comparePassword } from '../utils/encryption';
 import { signCredentials, verifyCredentials } from '../utils/jwtHelper';
 
 
 export default {
-  /**
-   * 
-   * @param {{ user_id: string }} args 
-   */
-  getUser: async (args) => {
-    const { user_id } = args;
+  getUser: async (args: { userId: string }) => {
+    const { userId } = args;
 
-    const user = await User.findOne({ where: { id: user_id } });
+    const user = await UserModel.findOne({ _id: userId });
     if (!user) throw new ServerError({ data: -1 });
-    
+
     return {
-      user_id: user.id,
-      user_name: user.name,
+      userId: user._id,
+      userName: user.name,
     }
   }
 }

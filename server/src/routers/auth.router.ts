@@ -1,10 +1,9 @@
 import { Router } from 'express';
 import { BadRequestError } from '../common/error';
 import { successResponse } from '../common/responses';
+import { verifyRefreshTokenMiddleware, verifyTokenMiddleware } from '../middlewares/authMiddlewares';
 import authService from '../services/auth.service';
 import asyncHandler from '../utils/asyncHandler';
-import { verifyRefreshTokenMiddleware, verifyTokenMiddleware } from '../middlewares/authMiddlewares';
-import { signCredentials } from '../utils/jwtHelper';
 
 const authRouter = Router();
 
@@ -14,13 +13,13 @@ authRouter.post(
     const { email, password } = req.body;
     if (!email || !password) throw new BadRequestError();
     const data = await authService.login({ email, password });
-    const { access_token, refresh_token, ...response } = data;
+    const { accessToken, refreshToken, ...response } = data;
     const cookieOptions = { httpOnly: true };
     if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
     if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
     if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
-    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
-    res.cookie('x-refresh-token', refresh_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
+    res.cookie('x-access-token', accessToken, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
+    res.cookie('x-refresh-token', refreshToken, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
     return successResponse(res, response);
   })
 );
@@ -42,8 +41,8 @@ authRouter.get(
     // TODO: clear token REDIS
     const credentials = req.credentials;
     if (credentials) {
-      const user_id = credentials.user_id;
-      await authService.logout({ user_id });
+      const userId = credentials.userId;
+      await authService.logout({ userId });
     }
     res.clearCookie('x-access-token');
     res.clearCookie('x-refresh-token');
@@ -55,13 +54,13 @@ authRouter.post(
   '/refresh-token',
   verifyRefreshTokenMiddleware,
   asyncHandler(async (req, res) => {
-    const { user_id, user_name } = req.credentials;
-    const access_token = await authService.refreshToken({ user_id, user_name });
+    const { userId, userName } = req.credentials!;
+    const accessToken = await authService.refreshToken({ userId, userName });
     const cookieOptions = { httpOnly: true };
     if (process.env.SECURED_ENDPOINT) Object.assign(cookieOptions, { secure: true });
     if (process.env.SAME_SITE) Object.assign(cookieOptions, { sameSite: process.env.SAME_SITE });
     if (process.env.COOKIE_DOMAIN) Object.assign(cookieOptions, { domain: process.env.COOKIE_DOMAIN });
-    res.cookie('x-access-token', access_token, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
+    res.cookie('x-access-token', accessToken, { ...cookieOptions, maxAge: 1000 * 60 * 60 * 24 * 365 });
     return successResponse(res);
   })
 )

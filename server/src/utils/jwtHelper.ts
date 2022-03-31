@@ -1,16 +1,20 @@
 import crypto from 'crypto';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { UnauthorizedError } from '../common/error';
+import { Credentials } from "../common/requests";
 
 /**
  * 
  * @param {{
  *  type?: 'accessToken' | 'refreshToken'
- *  credentials: { user_id: number, role?: string, user_name?: string }
+ *  credentials: { userId: string, role?: string, userName?: string }
  * }} args 
  * @returns 
  */
-export function signCredentials(args) {
+export function signCredentials(args: {
+  type?: "accessToken" | "refreshToken",
+  credentials: Credentials
+}) {
   const { credentials, type = 'accessToken' } = args;
   const secret = type === 'accessToken' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
   const expiresIn = type === 'accessToken' ? 600 : 60 * 60 * 24 * 7;
@@ -18,22 +22,14 @@ export function signCredentials(args) {
   return jwt.sign({ nonce, ...credentials }, secret, { expiresIn });
 }
 
-/**
- * 
- * @param {{
- *  token: string;
- *  type?: 'accessToken' | 'refreshToken';
- * }} args 
- * @returns 
- */
-export function verifyCredentials(args) {
+export function verifyCredentials(args: {
+  type?: 'accessToken' | 'refreshToken';
+  token: string
+}) {
   try {
     const { token, type = 'accessToken' } = args;
     const secret = type === 'accessToken' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
-    /**
-     * @type {import('jsonwebtoken').JwtPayload}
-     */
-    const credentials = jwt.verify(token, secret);
+    const credentials: Credentials = jwt.verify(token, secret);
     return credentials;
   } catch (e) {
     if (e instanceof JsonWebTokenError) {

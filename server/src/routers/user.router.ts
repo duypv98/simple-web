@@ -10,9 +10,10 @@ userRouter.get(
   '/me',
   verifyTokenMiddleware,
   asyncHandler(async (req, res) => {
-    const { user_id, user_name } = req.credentials;
-    // const data = await userService.getUser({ user_id });
-    return successResponse(res, { user_id, user_name });
+    const { userId, userName } = req.credentials!;
+    // const data = await userService.getUser({ userId });
+    // TODO: get all information
+    return successResponse(res, { userId, userName });
   })
 )
 

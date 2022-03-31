@@ -6,24 +6,11 @@
   "author": "DuyPV",
   "license": "MIT",
   "scripts": {
-    "build": "babel src -d dist",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
-    "dev": "nodemon --exec babel-node src/index.js",
-    "migrate": "npx sequelize db:migrate",
-    "migrate:undo": "npx sequelize db:migrate:undo",
-    "migrate:format": "npx sequelize db:migrate:undo:all"
+    "build": "rm -rf dist && tsc",
+    "start": "cross-env NODE_ENV=production node server/src/index.js",
+    "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --pretty src/index.ts"
   },
   "dependencies": {
-    "@babel/cli": "7.15.4",
-    "@babel/core": "7.15.5",
-    "@babel/node": "7.15.4",
-    "@babel/plugin-proposal-class-properties": "7.14.5",
-    "@babel/plugin-proposal-object-rest-spread": "7.15.6",
-    "@babel/plugin-transform-runtime": "7.15.0",
-    "@babel/preset-env": "7.15.6",
-    "@babel/register": "7.15.3",
-    "babel-plugin-add-module-exports": "^1.0.4",
-    "babel-plugin-inline-json-import": "0.3.2",
     "bcryptjs": "2.4.3",
     "cookie-parser": "1.4.5",
     "cors": "^2.8.5",
@@ -34,13 +21,15 @@
     "fs": "0.0.1-security",
     "helmet": "^4.6.0",
     "jsonwebtoken": "8.5.1",
-    "pg": "8.7.1",
-    "sequelize": "6.6.5"
+    "mongoose": "6.1.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "1.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/crypto-js": "^4.1.1",
+    "@types/mongoose": "5.11.97",
     "cross-env": "^7.0.3",
-    "nodemon": "2.0.12",
-    "sequelize-cli": "6.2.0"
+    "ts-node-dev": "^1.1.8",
+    "typescript": "4.4.2"
   }
 }

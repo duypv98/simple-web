@@ -1,27 +1,22 @@
 import { message } from 'antd';
 import { AES } from 'crypto-js';
-import { useRef } from 'react';
+import { PropsWithoutRef, useRef } from 'react';
 import './style.css';
 import { Link } from 'react-router-dom';
 
-/**
- * 
- * @param {import('react').PropsWithoutRef<{ callback: (err: number, user: any) => void }>} props 
- * @returns 
- */
-const LoginForm = (props) => {
+const LoginForm = (props: PropsWithoutRef<{ callback: (err: number, user: any) => void }>) => {
   const { callback } = props;
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
   const login = () => {
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
     if (!email || !password) return;
     fetch(`${process.env.REACT_APP_ENDPOINT}/auth/login`, {
       method: "POST",
       body: JSON.stringify({
         email,
-        password: AES.encrypt(password, process.env.REACT_APP_ENCODE_PWD_KEY).toString()
+        password: AES.encrypt(password, process.env.REACT_APP_ENCODE_PWD_KEY!).toString()
       }),
       headers: { "Content-Type": "application/json" },
       credentials: 'include'

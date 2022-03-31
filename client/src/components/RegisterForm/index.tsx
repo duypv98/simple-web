@@ -1,18 +1,14 @@
 import { message } from 'antd';
 import { AES } from 'crypto-js';
-import { useEffect, useRef } from 'react';
+import { PropsWithoutRef, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './style.css';
 
-/**
- * 
- * @param {import('react').PropsWithoutRef<{ callback: (err: number) => void; user?: any }>} props 
- */
-const RegisterForm = (props) => {
+const RegisterForm = (props:PropsWithoutRef<{ callback: (err: number) => void; user?: any }>) => {
   const { callback } = props;
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
   const history = useHistory();
 
   useEffect(() => {
@@ -23,16 +19,16 @@ const RegisterForm = (props) => {
   }, [props.user])
 
   const register = () => {
-    const name = nameRef.current.value;
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+    const name = nameRef.current?.value;
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
     if (!email || !password || !name) return;
     fetch(`${process.env.REACT_APP_ENDPOINT}/auth/register`, {
       method: "POST",
       body: JSON.stringify({
         name,
         email,
-        password: AES.encrypt(password, process.env.REACT_APP_ENCODE_PWD_KEY).toString()
+        password: AES.encrypt(password, process.env.REACT_APP_ENCODE_PWD_KEY!).toString()
       }),
       headers: { "Content-Type": "application/json" }
     })

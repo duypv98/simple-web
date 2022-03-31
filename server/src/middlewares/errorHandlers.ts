@@ -1,14 +1,8 @@
+import { NextFunction, Request, Response } from "express";
 import { ServerError } from '../common/error'
 import { failureResponse, serverErrorResponse } from '../common/responses';
 
-/**
- * 
- * @param {Error} err 
- * @param {import('express').Request} req 
- * @param {import('express').Response} res 
- * @param {import('express').NextFunction} next 
- */
-export const handleAPIError = (err, req, res, next) => {
+export const handleAPIError = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     if (err instanceof ServerError) {
       const { status, message, data } = err;
@@ -21,13 +15,7 @@ export const handleAPIError = (err, req, res, next) => {
   return next();
 }
 
-/**
- * 
- * @param {import('express').Request} req 
- * @param {import('express').Response} res 
- * @param {import('express').NextFunction} next 
- */
-export const handleNotFoundError = (req, res, next) => {
+export const handleNotFoundError = (req: Request, res: Response, next: NextFunction) => {
   serverErrorResponse(res, 404, { message: `Endpoint ${req.method} ${req.url} not found` });
   return next();
 }

@@ -9,15 +9,14 @@ import RegisterForm from './components/RegisterForm';
 import fetchInterceptors from './utils/fetchInterceptor';
 
 function App() {
-
-  /**
-   * @type {[{user_id: number; user_name: string}, import('react').Dispatch<import('react').SetStateAction<{ user_id: number; user_name: string }>>]}
-   */
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<{
+    userId: string;
+    userName: string
+  } | null>(null);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchInterceptors({ url: '/users/me', baseUrl: process.env.REACT_APP_ENDPOINT })
+    fetchInterceptors({ url: '/users/me', baseUrl: process.env.REACT_APP_ENDPOINT! })
       .then((rspBody) => {
         if (rspBody.success) {
           setUser(rspBody.data);
